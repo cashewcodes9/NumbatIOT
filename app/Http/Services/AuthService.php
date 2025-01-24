@@ -2,10 +2,12 @@
 
 namespace App\Http\Services;
 
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -29,7 +31,7 @@ class AuthService
         return $data;
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         //validate request
         $validated = $request->validated();
@@ -39,6 +41,7 @@ class AuthService
         $user = auth()->user();
 
         // Call the /oauth/token endpoint to get the tokens
+
         $response = Http::asForm()->post('http://127.0.0.1:8000/oauth/token', [
             'grant_type' => 'password',
             'client_id' => env('PASSWORD_CLIENT_ID'), // Define in .env
