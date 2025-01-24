@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RefreshRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Services\AuthService;
 use Exception;
@@ -48,7 +49,6 @@ class AuthController extends BaseController
             return $this->sendError('User registration failed', $e->getMessage(), 400);
         }
 
-
         return $this->sendResponse($data, 'User registered successfully');
     }
 
@@ -79,10 +79,10 @@ class AuthController extends BaseController
     }
 
     // return new access token using the refresh token
-    public function refresh(Request $request): JsonResponse
+    public function refresh(RefreshRequest $request): JsonResponse
     {
         try {
-            $data = $this->authService->refresh($request);
+            $data = $this->authService->getRefreshToken($request);
         } catch (Exception $e) {
             $response = [
                 'status' => 'error',

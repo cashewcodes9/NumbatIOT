@@ -20,9 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Passport::tokensCan([
-            'read-user' => 'Read user information',
-            'write-user' => 'Modify user information',
-        ]);
+        Passport::enablePasswordGrant();
     }
 }
