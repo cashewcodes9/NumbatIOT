@@ -17,7 +17,8 @@ class Device extends Model
     /**
      * Number of items per page
      */
-    Const PER_PAGE = 10;
+    const PER_PAGE = 10;
+
     /**
      * many-to-many relationship with users
      *
@@ -25,8 +26,21 @@ class Device extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'access')
-            ->withPivot('permission')
+        return $this->belongsToMany(User::class, 'access', 'device_id', 'user_id')
             ->withTimestamps();
+    }
+
+    /**
+     * Scope a query to only include devices related to the user with the given id.
+     *
+     * @param $query
+     * @param $user_id
+     * @return mixed
+     */
+    public function scopeRelatedToUser($query, $user_id)
+    {
+        return $query->whereHas('users', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        });
     }
 }

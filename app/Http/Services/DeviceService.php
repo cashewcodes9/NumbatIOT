@@ -3,7 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Interface\DeviceRepositoryInterface;
-use App\Models\Device;
+use App\Http\Requests\IndexDeviceRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -31,8 +31,9 @@ class DeviceService
      *
      * @return mixed
      */
-    public function getDevices(int $perPage = Device::PER_PAGE): LengthAwarePaginator
+    public function getDevices(IndexDeviceRequest $request): LengthAwarePaginator
     {
-        return $this->deviceRepository->getDevices($perPage);
+        $validated = $request->validated();
+        return $this->deviceRepository->getDevices($validated['per_page']);
     }
 }

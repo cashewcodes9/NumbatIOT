@@ -2,66 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\UserService;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): JsonResponse
-    {
-        $user = auth()->user();
-        return $this->sendResponse($user, 'User retrieved successfully');
-    }
+    protected UserService $userService;
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function __construct(UserService $userService)
     {
-        //
+        $this->userService = $userService;
     }
-
     /**
-     * Store a newly created resource in storage.
+     * Display a currently authenticated user.
      */
-    public function store(Request $request)
+    public function getCurrentUser(): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
+        try {
+            return $this->userService->getCurrentUser();
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve users', $e->getMessage(), 400);
+        }
     }
 }

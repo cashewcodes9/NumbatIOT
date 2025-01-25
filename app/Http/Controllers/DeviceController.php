@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexDeviceRequest;
 use App\Http\Services\DeviceService;
+use App\Models\Device;
+use Exception;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Class DeviceController
  * @package App\Http\Controllers
  */
-class DeviceController
+class DeviceController extends BaseController
 {
     /**
      * @var DeviceService
@@ -31,9 +34,28 @@ class DeviceController
      * @param IndexDeviceRequest $request
      * @return mixed
      */
-    public function index(IndexDeviceRequest $request)
+    public function index(IndexDeviceRequest $request) : JsonResponse
     {
-        return $this->deviceService->getDevices($request->get('per_page'));
+        try {
+            return $this->deviceService->getDevices($request);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve devices', $e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get devices related to the user
+     *
+     * @return mixed
+     */
+    public function getUserDevices(): JsonResponse
+    {
+        try {
+            return Device::relatedToUser(1)->paginate(Device::PER_PAGE); //without auth testing only
+            //return Device::relatedToUser(auth()->id())->paginate(Device::PER_PAGE);
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve devices', $e->getMessage(), 400);
+        }
     }
 
 }
