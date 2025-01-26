@@ -8,7 +8,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Services\AuthService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 /**
  * Class AuthController

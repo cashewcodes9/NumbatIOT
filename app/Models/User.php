@@ -40,4 +40,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the devices associated with the user.
+     */
+    public function devices()
+    {
+        return $this->belongsToMany(Device::class, 'access', 'user_id', 'device_id')
+            ->withTimestamps();
+    }
 }
