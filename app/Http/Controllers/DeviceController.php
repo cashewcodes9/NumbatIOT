@@ -37,9 +37,23 @@ class DeviceController extends BaseController
     public function index(IndexDeviceRequest $request) : JsonResponse
     {
         try {
-            return $this->deviceService->getDevices($request);
+            return $this->sendResponse($this->deviceService->index($request), 'Devices retrieved successfully');
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve devices', $e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Show a device
+     *
+     * @return mixed
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            return $this->sendResponse($this->deviceService->show($id), 'Device retrieved successfully');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to retrieve device', $e->getMessage(), 400);
         }
     }
 
@@ -51,8 +65,7 @@ class DeviceController extends BaseController
     public function getUserDevices(): JsonResponse
     {
         try {
-            return Device::relatedToUser(1)->paginate(Device::PER_PAGE); //without auth testing only
-            //return Device::relatedToUser(auth()->id())->paginate(Device::PER_PAGE);
+            return $this->sendResponse($this->deviceService->getUserDevices(), 'Devices retrieved successfully');
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve devices', $e->getMessage(), 400);
         }

@@ -7,60 +7,120 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+### Using Laravel 11 for the API
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Laravel is a web application framework with expressive, elegant syntax.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Installation
+This project is using Laravel Sail, a built-in docker environment for Laravel. To install the project, you need to have Docker installed on your machine.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clone the repository
 
-## Learning Laravel
+```bash
+git https://github.com/cashewcodes9/NumbatIOT.git
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. Change directory to the project folder
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash 
+cd NumbatIOT
+```
+3. start the docker environment
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+./vendor/bin/sail up 
 
-## Laravel Sponsors
+Docker will start the environment and you can access API endpoints on http://0.0.0.0:80/api
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+for example: http://127.0.0.1:8000/api/devices to get devices.
+```
 
-### Premium Partners
+if you want to run the project without docker, you can run the following commands:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```
+composer install
+```
 
-## Contributing
+Generate a new application key
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+``` 
+php artisan key:generate
+```
 
-## Code of Conduct
+### Configurate database
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Create a new database and update the .env file with the database credentials.
 
-## Security Vulnerabilities
+```
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+4. Run the migration to create the tables
 
-## License
+```
+php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. Run the seeder to add dummy data to the database
+
+```
+php artisan db:seed
+```
+6. Create a password grant client
+
+
+you can create your own password grant client by running the following command:
+
+```
+php artisan passport:client --password
+````
+
+### API Endpoints
+Available endpoints are:
+````
+  POST      api/login ................................................................... login › AuthController@login
+  POST      api/refresh ............................................................. refresh › AuthController@refresh
+  POST      api/register .......................................................... register › AuthController@register
+  GET|HEAD  api/user ................................................................ userIndex › AuthController@index
+  GET|HEAD  api/user/devices ........................................... userDevices › DeviceController@getUserDevices
+  GET|HEAD  api/device/{id} ....................................................... deviceShow › DeviceController@show
+````
+
+Additional endpoints for authorization server backed by Laravel Passport are:
+````
+GET|HEAD  oauth/authorize . passport.authorizations.authorize › Laravel\Passport › AuthorizationController@authorize
+  POST      oauth/authorize passport.authorizations.approve › Laravel\Passport › ApproveAuthorizationController@appro…
+  DELETE    oauth/authorize ....... passport.authorizations.deny › Laravel\Passport › DenyAuthorizationController@deny
+  GET|HEAD  oauth/clients ....................... passport.clients.index › Laravel\Passport › ClientController@forUser
+  POST      oauth/clients ......................... passport.clients.store › Laravel\Passport › ClientController@store
+  PUT       oauth/clients/{client_id} ........... passport.clients.update › Laravel\Passport › ClientController@update
+  DELETE    oauth/clients/{client_id} ......... passport.clients.destroy › Laravel\Passport › ClientController@destroy
+  GET|HEAD  oauth/personal-access-tokens passport.personal.tokens.index › Laravel\Passport › PersonalAccessTokenContr…
+  POST      oauth/personal-access-tokens passport.personal.tokens.store › Laravel\Passport › PersonalAccessTokenContr…
+  DELETE    oauth/personal-access-tokens/{token_id} passport.personal.tokens.destroy › Laravel\Passport › PersonalAcc…
+  GET|HEAD  oauth/scopes .............................. passport.scopes.index › Laravel\Passport › ScopeController@all
+  POST      oauth/token ......................... passport.token › Laravel\Passport › AccessTokenController@issueToken
+  POST      oauth/token/refresh ......... passport.token.refresh › Laravel\Passport › TransientTokenController@refresh
+  GET|HEAD  oauth/tokens .......... passport.tokens.index › Laravel\Passport › AuthorizedAccessTokenController@forUser
+  DELETE    oauth/tokens/{token_id} passport.tokens.destroy › Laravel\Passport › AuthorizedAccessTokenController@dest…
+
+````
+
+### Notes
+
+I have added a few dummy data to the database to test the API. It will also create an oauth client for test environment.
+
+````
+php artisan db:seed
+````
+
+you can create your own password grant client by running the following command:
+
+````
+php artisan passport:client --password
+````

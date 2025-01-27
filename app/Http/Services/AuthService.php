@@ -7,8 +7,6 @@ use App\Http\Requests\RefreshRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Exception;
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 /**

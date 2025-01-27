@@ -13,10 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-        //$device = Device::create(['name' => 'Device 1', 'device_unique_id' => rand(5, 10000), 'Model' => 'Sensor 453']);
-        //$device->users()->attach(User::first(), ['permission' => 'read']);
-
+        // Seed users and devices
         $this->call([
             UserDeviceSeeder::class
         ]);
